@@ -9,11 +9,11 @@ class CustomStreamListener(tweepy.StreamListener):
     """Subclass to handle Twitter stream and sending accounts to Botometer for analysis.
     """
 
-    def __init__(self, bom, con, cur):
+    def __init__(self, bom: botometer.Botometer, con: sqlite3.Connection, cur: sqlite3.Cursor):
         self.bom = bom
         self.con = con
         self.cur = cur
-        super().__init__(self)
+        super().__init__()
 
     def on_error(self, status_code):
         print(status_code)
@@ -45,11 +45,12 @@ if __name__ == "__main__":
         con.commit()
         # Initialise Botometer
         bom = botometer.Botometer(wait_on_ratelimit=True, rapidapi_key=args.rapidapi_key, **args.twitter_app_auth)
-        # Initialise Tweepy authentication handler
-        auth = tweepy.AppAuthHandler(consumer_key=args.twitter_app_auth["consumer_key"], consumer_secret=args.twitter_app_auth["consumer_secret"])
+        # Initialise Tweepy OAuth handler
+        auth = tweepy.OAuthHandler(consumer_key=args.twitter_app_auth["consumer_key"], consumer_secret=args.twitter_app_auth["consumer_secret"])
+        auth.set_access_token(key=args.twitter_app_auth["access_token"], secret=args.twitter_app_auth["access_token_secret"])
         # Initialise Tweepy API
         api = tweepy.API(auth)
-        # Create custom stream listener
+        # Initialise custom stream listener
         stream_listener = CustomStreamListener(bom, con, cur)
         # Initialise Tweepy stream using custom stream listener
         stream = tweepy.Stream(auth=api.auth, listener=stream_listener)
