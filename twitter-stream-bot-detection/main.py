@@ -38,7 +38,7 @@ class CustomStreamListener(tweepy.StreamListener):
             status (tweepy.Status): The tweepy.Status model representation of a Tweet.
         """
         print(f"Tweet received. Sending Twitter user: {status.user.screen_name} to Botometer for analysis.")
-        # Query the Botometer API
+        # Query the Botometer API for the Twitter user's bot scores
         result = self.bom.check_account(status.user.id)
         print("Storing results in database.")
         # Store the Twitter user's screen name
