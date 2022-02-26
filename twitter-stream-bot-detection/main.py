@@ -31,7 +31,7 @@ import logging
 
 
 class CustomStreamListener(tweepy.StreamListener):
-    """Subclass to handle Twitter stream and sending accounts to Botometer for analysis.
+    """Subclass to handle the Twitter stream and sending accounts to Botometer for analysis.
 
     https://docs.tweepy.org/en/v3.10.0/streaming_how_to.html#streaming-with-tweepy
     """
