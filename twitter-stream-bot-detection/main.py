@@ -41,7 +41,7 @@ class CustomStreamListener(tweepy.StreamListener):
         # Query the Botometer API for the Twitter user's bot scores
         result = self.bom.check_account(status.user.id)
         print("Storing results in database.")
-        # Store the Twitter user's screen name
+        # Store the Twitter user's screen name and JSON payloads of the Tweet and Botometer API results
         self.cur.execute("INSERT INTO data values (?, ?, ?)", [status.user.screen_name, json.dumps(status._json), json.dumps(result)])
         self.con.commit()
 
