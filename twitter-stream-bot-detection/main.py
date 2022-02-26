@@ -47,7 +47,7 @@ class CustomStreamListener(tweepy.StreamListener):
 
 if __name__ == "__main__":
     try:
-        parser = argparse.ArgumentParser(description="Watch the Twitter stream of a hashtag and send accounts to Botometer for analysis.")
+        parser = argparse.ArgumentParser(description="Watch the Twitter stream, sending accounts to Botometer for analysis and store the results.")
         parser.add_argument("rapidapi_key", type=str, help="Botometer Rapid API key.")
         parser.add_argument("twitter_app_auth", type=json.loads, help="Twitter application credentials.")
         parser.add_argument("-t", "--track", action="append", help="A list of hashtags to track.")
