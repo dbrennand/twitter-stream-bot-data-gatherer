@@ -83,7 +83,7 @@ if __name__ == "__main__":
         VERSION = "0.1.0"
         print(f"Starting twitter-stream-bot-data-gatherer version: {VERSION}")
         parser = argparse.ArgumentParser(
-            description="An application to watch the Twitter stream and send accounts to Botometer for analysis. The results are stored in a SQLite database."
+            description="An application to watch the Twitter stream and send accounts to the Botometer API for analysis. The results are stored in a SQLite database."
         )
         parser.add_argument("rapidapi_key", type=str, help="Botometer Rapid API key.")
         parser.add_argument(
