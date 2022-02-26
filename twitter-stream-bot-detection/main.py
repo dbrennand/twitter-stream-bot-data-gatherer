@@ -7,6 +7,8 @@ import logging
 
 class CustomStreamListener(tweepy.StreamListener):
     """Subclass to handle Twitter stream and sending accounts to Botometer for analysis.
+
+    https://docs.tweepy.org/en/v3.10.0/streaming_how_to.html#streaming-with-tweepy
     """
 
     def __init__(self, bom: botometer.Botometer, con: sqlite3.Connection, cur: sqlite3.Cursor):
@@ -16,15 +18,30 @@ class CustomStreamListener(tweepy.StreamListener):
         super().__init__()
 
     def on_error(self, status_code: int):
+        """Called when a non-200 status code is returned.
+
+        Args:
+            status_code (int): The HTTP status code returned by the Twitter stream.
+
+        Returns:
+            bool: `False` to disconnect from the Twitter stream.
+        """
         if status_code == 420:
             # We're being rate limited by the Twitter API so disconnect
             return False
 
     def on_status(self, status: tweepy.Status):
+        """Called when a new status (Tweet) is received from the Twitter stream.
+        Query the user of the Tweet to Botometer and store results.
+
+        Args:
+            status (tweepy.Status): The tweepy.Status model representation of a Tweet.
+        """
         print(f"Tweet received. Sending Twitter user: {status.user.screen_name} to Botometer for analysis.")
         # Query the Botometer API
         result = self.bom.check_account(status.user.id)
         print("Storing results in database.")
+        # Store the Twitter user's screen name
         self.cur.execute("INSERT INTO data values (?, ?, ?)", [status.user.screen_name, json.dumps(status._json), json.dumps(result)])
         self.con.commit()
 
@@ -50,7 +67,7 @@ if __name__ == "__main__":
         auth = tweepy.OAuthHandler(consumer_key=args.twitter_app_auth["consumer_key"], consumer_secret=args.twitter_app_auth["consumer_secret"])
         auth.set_access_token(key=args.twitter_app_auth["access_token"], secret=args.twitter_app_auth["access_token_secret"])
         # Initialise Tweepy API
-        api = tweepy.API(auth)
+        api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
         # Initialise custom stream listener
         stream_listener = CustomStreamListener(bom, con, cur)
         # Initialise Tweepy stream using custom stream listener
