@@ -106,7 +106,7 @@ if __name__ == "__main__":
         if args.debug:
             logging.basicConfig(level=logging.DEBUG)
         # Initialise DB and table
-        con = sqlite3.connect(f"{args.database_name}T{'-'.join(args.track)}.db")
+        con = sqlite3.connect(f"{args.database_name}.db")
         cur = con.cursor()
         cur.execute(
             "CREATE TABLE data (screen_name TEXT, status_json json, botometer_json json)"
