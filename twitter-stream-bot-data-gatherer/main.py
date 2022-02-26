@@ -96,8 +96,8 @@ if __name__ == "__main__":
             "-f",
             "--database_name",
             type=str,
-            default="twitter-stream-bot-detection",
-            help="Name of the database file. Defaults to: twitter-stream-bot-detection.",
+            default="twitter-stream-bot-data-gatherer",
+            help="Name of the database file. Defaults to: twitter-stream-bot-data-gatherer.",
         )
         parser.add_argument(
             "-d", "--debug", action="store_true", help="Enable debug messages."
