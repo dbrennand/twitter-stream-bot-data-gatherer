@@ -100,11 +100,16 @@ if __name__ == "__main__":
             help="Name of the database file. Defaults to: twitter-stream-bot-data-gatherer.",
         )
         parser.add_argument(
+            "-v", "--verbose", action="store_true", help="Enable verbose (INFO log level) messages."
+        )
+        parser.add_argument(
             "-d", "--debug", action="store_true", help="Enable debug messages."
         )
         args = parser.parse_args()
         if args.debug:
             logging.basicConfig(level=logging.DEBUG)
+        elif args.verbose:
+            logging.basicConfig(level=logging.INFO)
         # Initialise DB and table
         con = sqlite3.connect(f"{args.database_name}.db")
         cur = con.cursor()
