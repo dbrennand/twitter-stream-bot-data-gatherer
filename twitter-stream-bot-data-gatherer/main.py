@@ -143,6 +143,6 @@ if __name__ == "__main__":
         stream = tweepy.Stream(auth=api.auth, listener=stream_listener)
         # Begin tracking the Twitter stream
         logging.info(f"Tracking Twitter stream hashtag(s): {args.track}")
-        stream.filter(track=args.track)
+        stream.filter(track=args.track, stall_warnings=True)
     except KeyboardInterrupt:
         con.close()
