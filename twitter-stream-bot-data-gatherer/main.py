@@ -28,6 +28,7 @@ import sqlite3
 import botometer
 import tweepy
 import logging
+import os
 
 
 class CustomStreamListener(tweepy.StreamListener):
@@ -110,8 +111,12 @@ if __name__ == "__main__":
             logging.basicConfig(level=logging.DEBUG)
         elif args.verbose:
             logging.basicConfig(level=logging.INFO)
+        # Check db directory exists, if not, create it in current working directory
+        db_dir = f"{os.getcwd()}/db"
+        if not os.path.exists(db_dir):
+            os.makedirs(db_dir)
         # Initialise DB and table
-        con = sqlite3.connect(f"{args.database_name}.db")
+        con = sqlite3.connect(f"db/{args.database_name}.db")
         cur = con.cursor()
         cur.execute(
             "CREATE TABLE IF NOT EXISTS data (screen_name TEXT, status_json json, botometer_json json)"
