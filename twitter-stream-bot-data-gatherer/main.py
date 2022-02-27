@@ -65,12 +65,12 @@ class CustomStreamListener(tweepy.StreamListener):
         Args:
             status (tweepy.Status): The tweepy.Status model representation of a Tweet.
         """
-        print(
+        logging.info(
             f"Tweet received. Sending Twitter user: {status.user.screen_name} to Botometer for analysis."
         )
         # Query the Botometer API for the Twitter user's bot scores
         result = self.bom.check_account(status.user.id)
-        print("Storing results in database.")
+        logging.info("Storing results in database.")
         # Store the Twitter user's screen name and JSON payloads of the Tweet and Botometer API results
         self.cur.execute(
             "INSERT INTO data values (?, ?, ?)",
@@ -82,7 +82,6 @@ class CustomStreamListener(tweepy.StreamListener):
 if __name__ == "__main__":
     try:
         VERSION = "0.1.0"
-        print(f"Starting twitter-stream-bot-data-gatherer version: {VERSION}")
         parser = argparse.ArgumentParser(
             description="An application to watch the Twitter stream and send accounts to the Botometer API for analysis. The results are stored in a SQLite database."
         )
@@ -101,16 +100,15 @@ if __name__ == "__main__":
             help="Name of the database file. Defaults to: twitter-stream-bot-data-gatherer.",
         )
         parser.add_argument(
-            "-v", "--verbose", action="store_true", help="Enable verbose (INFO log level) messages."
-        )
-        parser.add_argument(
             "-d", "--debug", action="store_true", help="Enable debug messages."
         )
         args = parser.parse_args()
+        # Set log level for application
         if args.debug:
             logging.basicConfig(level=logging.DEBUG)
-        elif args.verbose:
+        else:
             logging.basicConfig(level=logging.INFO)
+        logging.info(f"Starting twitter-stream-bot-data-gatherer version: {VERSION}")
         # Check db directory exists, if not, create it in current working directory
         db_dir = f"{os.getcwd()}/db"
         if not os.path.exists(db_dir):
@@ -144,7 +142,7 @@ if __name__ == "__main__":
         # Initialise Tweepy stream using custom stream listener
         stream = tweepy.Stream(auth=api.auth, listener=stream_listener)
         # Begin tracking the Twitter stream
-        print(f"Tracking Twitter stream hashtag(s): {args.track}")
+        logging.info(f"Tracking Twitter stream hashtag(s): {args.track}")
         stream.filter(track=args.track)
     except KeyboardInterrupt:
         con.close()
