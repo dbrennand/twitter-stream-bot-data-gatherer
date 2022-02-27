@@ -114,7 +114,7 @@ if __name__ == "__main__":
         con = sqlite3.connect(f"{args.database_name}.db")
         cur = con.cursor()
         cur.execute(
-            "CREATE TABLE data (screen_name TEXT, status_json json, botometer_json json)"
+            "CREATE TABLE IF NOT EXISTS data (screen_name TEXT, status_json json, botometer_json json)"
         )
         con.commit()
         # Initialise Botometer
