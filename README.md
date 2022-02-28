@@ -98,6 +98,7 @@ python twitter-stream-bot-data-gatherer/main.py <rapidapi_key> \
 python twitter-stream-bot-data-gatherer/main.py <rapidapi_key> \
   '{"consumer_key": "", "consumer_secret": "", "access_token": "", "access_token_secret": ""}' \
   -t '#StandWithUkriane' \
+  # The database will be named 'twitter-db.db'
   -f 'twitter-db'
 ```
 
