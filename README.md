@@ -77,19 +77,28 @@ optional arguments:
 ### Tracking a Single Hashtag
 
 ```bash
-python twitter-stream-bot-data-gatherer/main.py <rapidapi_key> '{"consumer_key": "", "consumer_secret": "", "access_token": "", "access_token_secret": ""}' --track '#StandWithUkriane'
+python twitter-stream-bot-data-gatherer/main.py <rapidapi_key> \
+  '{"consumer_key": "", "consumer_secret": "", "access_token": "", "access_token_secret": ""}' \
+  --track '#StandWithUkriane'
 ```
 
 ### Tracking Multiple Hashtags
 
 ```bash
-python twitter-stream-bot-data-gatherer/main.py <rapidapi_key> '{"consumer_key": "", "consumer_secret": "", "access_token": "", "access_token_secret": ""}' -t '#StandWithUkriane' -t '#RefugeesWelcome' -t '#Ukrania'
+python twitter-stream-bot-data-gatherer/main.py <rapidapi_key> \
+  '{"consumer_key": "", "consumer_secret": "", "access_token": "", "access_token_secret": ""}' \
+  -t '#StandWithUkriane' \
+  -t '#RefugeesWelcome' \
+  -t '#Ukrania'
 ```
 
 ### Modifying the SQLite Database Name
 
 ```bash
-python twitter-stream-bot-data-gatherer/main.py <rapidapi_key> '{"consumer_key": "", "consumer_secret": "", "access_token": "", "access_token_secret": ""}' -t '#StandWithUkriane' -f 'twitter-db'
+python twitter-stream-bot-data-gatherer/main.py <rapidapi_key> \
+  '{"consumer_key": "", "consumer_secret": "", "access_token": "", "access_token_secret": ""}' \
+  -t '#StandWithUkriane' \
+  -f 'twitter-db'
 ```
 
 ### Docker 🐋
@@ -105,7 +114,9 @@ Run the application and persist the SQLite database:
 ```bash
 docker run -it --name twitter-stream-bot-data-gatherer \
     -v absolute/path/to/store/db:/usr/src/app/db \
-    twitter-stream-bot-data-gatherer:v0.1.0 <rapidapi_key> '{"consumer_key": "", "consumer_secret": "", "access_token": "", "access_token_secret": ""}' --track '#StandWithUkriane'
+    twitter-stream-bot-data-gatherer:v0.1.0 <rapidapi_key> \
+    '{"consumer_key": "", "consumer_secret": "", "access_token": "", "access_token_secret": ""}' \
+    --track '#StandWithUkriane'
 ```
 
 ## My Related Work
