@@ -120,9 +120,9 @@ docker run -it --name twitter-stream-bot-data-gatherer \
     --track '#StandWithUkriane'
 ```
 
-## Database Structure
+## SQLite Database Structure
 
-The database will contain one table called `data`. Within the table will be three columns:
+The SQLite database will contain one table called `data`. Within the table will be three columns:
 
 1. `screen_name`: The screen name of the Twitter account.
 
