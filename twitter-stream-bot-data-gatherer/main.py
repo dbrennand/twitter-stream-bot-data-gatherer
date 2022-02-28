@@ -90,7 +90,10 @@ if __name__ == "__main__":
             "twitter_app_auth", type=json.loads, help="Twitter application credentials."
         )
         parser.add_argument(
-            "-t", "--track", action="append", help="A list of hashtags to track."
+            "-t",
+            "--track",
+            action="append",
+            help="A hashtag to track. Can be specified more than once.",
         )
         parser.add_argument(
             "-f",
