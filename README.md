@@ -67,7 +67,7 @@ positional arguments:
 optional arguments:
   -h, --help            show this help message and exit
   -t TRACK, --track TRACK
-                        A list of hashtags to track.
+                        A hashtag to track. Can be specified more than once.
   -f DATABASE_NAME, --database_name DATABASE_NAME
                         Name of the database file. Defaults to: twitter-
                         stream-bot-data-gatherer.
