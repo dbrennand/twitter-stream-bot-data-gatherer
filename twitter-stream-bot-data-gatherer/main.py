@@ -102,7 +102,7 @@ class CustomStreamListener(tweepy.StreamListener):
 
 if __name__ == "__main__":
     try:
-        VERSION = "0.1.0"
+        VERSION = "0.1.1"
         parser = argparse.ArgumentParser(
             description="An application to watch the Twitter stream and send accounts to the Botometer API for analysis. The results are stored in a SQLite database."
         )
