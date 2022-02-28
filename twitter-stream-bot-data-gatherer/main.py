@@ -83,8 +83,9 @@ class CustomStreamListener(tweepy.StreamListener):
             )
             self.con.commit()
         except botometer.NoTimelineError:
-            logging.warning(f"Twitter user: {status.user.screen_name} has no timeline. Continuing...")
-
+            logging.error(f"Twitter user: {status.user.screen_name} has no timeline. Continuing...")
+        except tweepy.TweepError as err:
+            logging.error(f"Failed to query the Botometer API for Twitter user: {status.user.screen_name}\n{err}\nContinuing...")
 
 if __name__ == "__main__":
     try:
