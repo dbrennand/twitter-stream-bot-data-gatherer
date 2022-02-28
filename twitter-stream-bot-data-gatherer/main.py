@@ -174,7 +174,7 @@ if __name__ == "__main__":
                 # Most likely our client is falling behind
                 # Reconnect to the Twitter stream and continue tracking
                 logging.error(
-                    f"An error occurred whilst tracking the Twitter stream. Reconnecting and continuing..."
+                    f"An error occurred whilst tracking the Twitter stream:\n{err}\nReconnecting and continuing..."
                 )
                 continue
     except KeyboardInterrupt:
