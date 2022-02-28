@@ -54,9 +54,13 @@ class CustomStreamListener(tweepy.StreamListener):
         Returns:
             bool: `False` to disconnect from the Twitter stream.
         """
+        logging.error(f"Error code: {status_code} received from the Twitter stream.")
         if status_code == 420:
+            logging.error(f"We're being rate limited! Disconnecting.")
             # We're being rate limited by the Twitter API so disconnect
             return False
+        # Reconnect to the Twitter stream
+        return True
 
     def on_status(self, status: tweepy.Status):
         """Called when a new status (Tweet) is received from the Twitter stream.
