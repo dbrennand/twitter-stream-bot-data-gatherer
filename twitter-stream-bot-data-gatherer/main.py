@@ -30,6 +30,13 @@ import tweepy
 import logging
 import os
 
+# https://github.com/tweepy/tweepy/issues/908
+from urllib3.exceptions import ProtocolError
+
+# https://github.com/tweepy/tweepy/issues/237
+# https://stackoverflow.com/questions/28717249/error-while-fetching-tweets-with-tweepy
+from http.client import IncompleteRead
+
 
 class CustomStreamListener(tweepy.StreamListener):
     """Subclass to handle the Twitter stream and sending accounts to Botometer for analysis.
@@ -53,10 +60,15 @@ class CustomStreamListener(tweepy.StreamListener):
 
         Returns:
             bool: `False` to disconnect from the Twitter stream.
+                `True` to reconnect to the Twitter stream.
         """
+        logging.error(f"Error code: {status_code} received from the Twitter stream.")
         if status_code == 420:
+            logging.error(f"We're being rate limited! Disconnecting.")
             # We're being rate limited by the Twitter API so disconnect
             return False
+        # Reconnect to the Twitter stream
+        return True
 
     def on_status(self, status: tweepy.Status):
         """Called when a new status (Tweet) is received from the Twitter stream.
@@ -69,19 +81,28 @@ class CustomStreamListener(tweepy.StreamListener):
             f"Tweet received. Sending Twitter user: {status.user.screen_name} to Botometer for analysis."
         )
         # Query the Botometer API for the Twitter user's bot-like scores
-        result = self.bom.check_account(status.user.id)
-        logging.info("Storing results in database.")
-        # Store the Twitter user's screen name, JSON response of the Tweet and Botometer API results
-        self.cur.execute(
-            "INSERT INTO data values (?, ?, ?)",
-            [status.user.screen_name, json.dumps(status._json), json.dumps(result)],
-        )
-        self.con.commit()
+        try:
+            result = self.bom.check_account(status.user.id)
+            logging.info("Storing results in database.")
+            # Store the Twitter user's screen name, JSON response of the Tweet and Botometer API results
+            self.cur.execute(
+                "INSERT INTO data values (?, ?, ?)",
+                [status.user.screen_name, json.dumps(status._json), json.dumps(result)],
+            )
+            self.con.commit()
+        except botometer.NoTimelineError:
+            logging.error(
+                f"Twitter user: {status.user.screen_name} has no timeline. Continuing..."
+            )
+        except tweepy.TweepError as err:
+            logging.error(
+                f"Failed to query the Botometer API for Twitter user: {status.user.screen_name}\n{err}\nYour API quota may be exhausted if you see this message multiple times."
+            )
 
 
 if __name__ == "__main__":
     try:
-        VERSION = "0.1.0"
+        VERSION = "0.1.1"
         parser = argparse.ArgumentParser(
             description="An application to watch the Twitter stream and send accounts to the Botometer API for analysis. The results are stored in a SQLite database."
         )
@@ -146,6 +167,15 @@ if __name__ == "__main__":
         stream = tweepy.Stream(auth=api.auth, listener=stream_listener)
         # Begin tracking the Twitter stream
         logging.info(f"Tracking Twitter stream hashtag(s): {args.track}")
-        stream.filter(track=args.track, stall_warnings=True)
+        while True:
+            try:
+                stream.filter(track=args.track, stall_warnings=True)
+            except (IncompleteRead, ProtocolError) as err:
+                # Most likely our client is falling behind
+                # Reconnect to the Twitter stream and continue tracking
+                logging.error(
+                    f"An error occurred whilst tracking the Twitter stream:\n{err}\nReconnecting and continuing..."
+                )
+                continue
     except KeyboardInterrupt:
         con.close()

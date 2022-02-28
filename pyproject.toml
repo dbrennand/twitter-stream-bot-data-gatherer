@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "twitter-stream-bot-detection"
-version = "0.1.0"
+version = "0.1.1"
 description = "An application to watch the Twitter stream and send accounts to the [Botometer API](https://botometer.osome.iu.edu/) for analysis. The results are stored in a SQLite database."
 authors = ["dbrennand <52419383+dbrennand@users.noreply.github.com>"]
 license = "MIT"
