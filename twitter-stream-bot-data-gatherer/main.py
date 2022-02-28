@@ -73,14 +73,17 @@ class CustomStreamListener(tweepy.StreamListener):
             f"Tweet received. Sending Twitter user: {status.user.screen_name} to Botometer for analysis."
         )
         # Query the Botometer API for the Twitter user's bot-like scores
-        result = self.bom.check_account(status.user.id)
-        logging.info("Storing results in database.")
-        # Store the Twitter user's screen name, JSON response of the Tweet and Botometer API results
-        self.cur.execute(
-            "INSERT INTO data values (?, ?, ?)",
-            [status.user.screen_name, json.dumps(status._json), json.dumps(result)],
-        )
-        self.con.commit()
+        try:
+            result = self.bom.check_account(status.user.id)
+            logging.info("Storing results in database.")
+            # Store the Twitter user's screen name, JSON response of the Tweet and Botometer API results
+            self.cur.execute(
+                "INSERT INTO data values (?, ?, ?)",
+                [status.user.screen_name, json.dumps(status._json), json.dumps(result)],
+            )
+            self.con.commit()
+        except botometer.NoTimelineError as err:
+            logging.warning(f"Twitter user: {status.user.screen_name} has no timeline. Continuing...")
 
 
 if __name__ == "__main__":
