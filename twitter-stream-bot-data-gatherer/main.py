@@ -96,7 +96,7 @@ class CustomStreamListener(tweepy.StreamListener):
             )
         except tweepy.TweepError as err:
             logging.error(
-                f"Failed to query the Botometer API for Twitter user: {status.user.screen_name}\n{err}\nContinuing..."
+                f"Failed to query the Botometer API for Twitter user: {status.user.screen_name}\n{err}\nYour API quota may be exhausted if you see this message multiple times."
             )
 
 
