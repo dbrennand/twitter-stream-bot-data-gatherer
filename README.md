@@ -36,7 +36,7 @@ Once you have chosen a plan, go to the RapidAPI [developer dashboard](https://ra
 
 Further details on accessing the Botometer API can be found [here](https://github.com/IUNetSci/botometer-python#rapidapi-and-twitter-access-details).
 
-### Dependencies
+## Dependencies
 
 Install the application's dependencies using one of the options below:
 
