@@ -120,6 +120,16 @@ docker run -it --name twitter-stream-bot-data-gatherer \
     --track '#StandWithUkriane'
 ```
 
+## Database Structure
+
+The database will contain one table called `data`. Within the table will be three columns:
+
+1. `screen_name`: The screen name of the Twitter account.
+
+2. `status_json`: The full JSON response of the [Tweet Object (aka. Status)](https://developer.twitter.com/en/docs/twitter-api/v1/data-dictionary/object-model/tweet) from the Twitter stream.
+
+3. `botometer_json`: The full JSON response from the Botometer API.
+
 ## My Related Work
 
 * [dbrennand/Final-Year-Project](https://github.com/dbrennand/Final-Year-Project) - An application that generates a report to identify potential bots that a Twitter user is following.
