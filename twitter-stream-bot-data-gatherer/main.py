@@ -82,7 +82,7 @@ class CustomStreamListener(tweepy.StreamListener):
                 [status.user.screen_name, json.dumps(status._json), json.dumps(result)],
             )
             self.con.commit()
-        except botometer.NoTimelineError as err:
+        except botometer.NoTimelineError:
             logging.warning(f"Twitter user: {status.user.screen_name} has no timeline. Continuing...")
 
 
