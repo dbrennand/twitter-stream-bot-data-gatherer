@@ -30,6 +30,13 @@ import tweepy
 import logging
 import os
 
+# https://github.com/tweepy/tweepy/issues/908
+from urllib3.exceptions import ProtocolError
+
+# https://github.com/tweepy/tweepy/issues/237
+# https://stackoverflow.com/questions/28717249/error-while-fetching-tweets-with-tweepy
+from http.client import IncompleteRead
+
 
 class CustomStreamListener(tweepy.StreamListener):
     """Subclass to handle the Twitter stream and sending accounts to Botometer for analysis.
@@ -53,6 +60,7 @@ class CustomStreamListener(tweepy.StreamListener):
 
         Returns:
             bool: `False` to disconnect from the Twitter stream.
+                `True` to reconnect to the Twitter stream.
         """
         logging.error(f"Error code: {status_code} received from the Twitter stream.")
         if status_code == 420:
@@ -83,9 +91,14 @@ class CustomStreamListener(tweepy.StreamListener):
             )
             self.con.commit()
         except botometer.NoTimelineError:
-            logging.error(f"Twitter user: {status.user.screen_name} has no timeline. Continuing...")
+            logging.error(
+                f"Twitter user: {status.user.screen_name} has no timeline. Continuing..."
+            )
         except tweepy.TweepError as err:
-            logging.error(f"Failed to query the Botometer API for Twitter user: {status.user.screen_name}\n{err}\nContinuing...")
+            logging.error(
+                f"Failed to query the Botometer API for Twitter user: {status.user.screen_name}\n{err}\nContinuing..."
+            )
+
 
 if __name__ == "__main__":
     try:
@@ -154,6 +167,15 @@ if __name__ == "__main__":
         stream = tweepy.Stream(auth=api.auth, listener=stream_listener)
         # Begin tracking the Twitter stream
         logging.info(f"Tracking Twitter stream hashtag(s): {args.track}")
-        stream.filter(track=args.track, stall_warnings=True)
+        while True:
+            try:
+                stream.filter(track=args.track, stall_warnings=True)
+            except (IncompleteRead, ProtocolError) as err:
+                # Most likely our client is falling behind
+                # Reconnect to the Twitter stream and continue tracking
+                logging.error(
+                    f"An error occurred whilst tracking the Twitter stream. Reconnecting and continuing..."
+                )
+                continue
     except KeyboardInterrupt:
         con.close()
